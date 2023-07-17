@@ -76,7 +76,7 @@ let configureApp (app: IApplicationBuilder, appEnv) =
      | false -> app.UseHttpsRedirection())
         .UseCors(configureCors)
         .UseStaticFiles(staticFileOptions)
-      //  .UseThrottlingTroll(Throttling.setOptions)
+        .UseThrottlingTroll(Throttling.setOptions)
         .UseWebSockets() 
         .UseGiraffe(handler)
 

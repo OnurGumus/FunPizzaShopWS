@@ -39,4 +39,4 @@ let setOptions (options: ThrottlingTrollOptions) =
         )
     |]
 
-
+    options.Config <- config
