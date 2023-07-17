@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "paket": {
+      "version": "7.2.1",
+      "commands": [
+        "paket"
+      ]
+    },
+    "fake-cli": {
+      "version": "6.0.0",
+      "commands": [
+        "fake"
+      ]
+    },
+    "fable": {
+      "version": "4.1.4",
+      "commands": [
+        "fable"
+      ]
+    },
+    "fantomas": {
+      "version": "6.1.1",
+      "commands": [
+        "fantomas"
+      ]
+    },
+    "telplin": {
+      "version": "8.0.1",
+      "commands": [
+        "telplin"
+      ]
+    }
+  }
+}
