@@ -4,7 +4,7 @@ open Giraffe
 open Microsoft.AspNetCore.Http
 open FunPizzaShop.Server.Views
 
-let webApp (env: #_) (layout: HttpContext -> (int -> Task<string>) -> string Task) =
+let webApp (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task) =
 
     let viewRoute view = 
         fun (next: HttpFunc) (ctx: HttpContext) ->
@@ -19,7 +19,7 @@ let webApp (env: #_) (layout: HttpContext -> (int -> Task<string>) -> string Tas
         routeCi "/" >=> defaultRoute
     ]
 
-let webAppWrapper (env: #_) (layout: HttpContext -> (int -> Task<string>) -> string Task) =
+let webAppWrapper (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task) =
     fun (next: HttpFunc) (context: HttpContext) -> task { 
         return! webApp env layout next context
      }
