@@ -40,12 +40,15 @@ let LitElement () =
 #if DEBUG
     Hook.useHmr hmr
 #endif
+ 
+    let split (str: string): PizzaSpecial option =
+        let res = Decode.Auto.fromString<PizzaSpecial>(str, extra = extraEncoders)
+        match res with
+            | Ok x -> Some x
+            | Error x -> console.error(x); Option.None
+
     let host, prop = LitElement.init (fun config -> 
-        let split (str: string): PizzaSpecial option =
-            let res = Decode.Auto.fromString<PizzaSpecial>(str, extra = extraEncoders)
-            match res with
-                | Ok x -> Some x
-                | Error x -> console.error(x); Option.None
+   
         config.useShadowDom <- false
         config.props <- {|
             special = Prop.Of( Option.None , attribute="special", fromAttribute = split)
