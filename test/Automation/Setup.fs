@@ -10,6 +10,7 @@ open Microsoft.Extensions.Configuration
 open Hocon.Extensions.Configuration
 open System.IO
 open FunPizzaShop.Server
+
 let configBuilder =
     ConfigurationBuilder()
         .AddHoconFile("test-config.hocon")

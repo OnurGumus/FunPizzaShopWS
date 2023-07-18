@@ -1,6 +1,5 @@
 config {
-  connection-string = "Data Source=Database/FunPizzaShop.db;"
-  admins = ["onur@outlook.com.tr"]
+  connection-string = "Data Source=Database/Test.db;"
   akka {
     persistence {
       query.journal.sql {
