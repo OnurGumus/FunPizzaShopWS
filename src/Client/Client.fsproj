@@ -5,7 +5,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ElmishOrder.fs" />
+    <Compile Include="PizzaItem.fs" />
     <Compile Include="App.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.fsproj" />
+    <ProjectReference Include="..\MVU\MVU.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
