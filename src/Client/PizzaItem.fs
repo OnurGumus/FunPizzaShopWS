@@ -27,6 +27,7 @@ let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
 
 [<HookComponent>]
 let view (host:LitElement) (model:Model) dispatch =
+    printf "%A" model
     Hook.useEffectOnce (fun () -> 
         host?addEventListener("click", (fun (e: MouseEvent) -> 
             host.dispatchCustomEvent (Events.PizzaSelected ,model.PizzaSpecial, true, true,true)
