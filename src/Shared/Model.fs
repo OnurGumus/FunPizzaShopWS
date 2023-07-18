@@ -6,6 +6,9 @@ open FsToolkit.ErrorHandling
 open Thoth.Json
 
 
+let extraEncoders = Extra.empty |> Extra.withInt64 |> Extra.withDecimal
+
+
 let inline forceValidate (e) =
     match e with
     | Ok x -> x

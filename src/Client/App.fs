@@ -1,4 +1,2 @@
 ﻿module FunPizzaShop.Client.App
-
-
-let doNothing ()= ()
+PizzaItem.register ()
