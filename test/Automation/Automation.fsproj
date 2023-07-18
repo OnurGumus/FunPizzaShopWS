@@ -1,15 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Setup.fs" />
+    <Compile Include="PizzaMenu.fs" />
     <Compile Include="Program.fs" />
     <EmbeddedResource Include="../../features/PizzaMenu.feature" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Server\Server.fsproj" />
+    <Content Include="./test-config.hocon">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

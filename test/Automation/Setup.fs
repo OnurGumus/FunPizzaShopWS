@@ -29,3 +29,12 @@ host.Start()
 let playwright = Playwright.CreateAsync().Result
 let browser = playwright.Chromium.LaunchAsync().Result
 
+
+[<BeforeScenario>]
+let setupContext() =
+    let context = browser.NewContextAsync(BrowserNewContextOptions(IgnoreHTTPSErrors = true)).Result
+    context
+
+[<AfterScenario>]
+let afterContext () =
+    appEnv.Reset()
