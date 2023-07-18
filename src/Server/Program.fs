@@ -136,7 +136,7 @@ let main args =
     let config = configBuilder.Build()
 
     let mutable ret = 0
-    let appEnv = obj()
+    let appEnv = new Environments.AppEnv(config)
     try
         try
             (host appEnv args).Run()

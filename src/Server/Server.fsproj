@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
@@ -21,13 +21,13 @@
     <Compile Include="Views\Index.fs" />
     <Compile Include="Views\Layout.fs" />
     <Compile Include="Handlers\Default.fs" />
+    <Compile Include="Environments.fs" />
     <Compile Include="Throttling.fs" />
     <Compile Include="Serilog.fs" />
     <Compile Include="HTTP.fs" />
     <Compile Include="Program.fs" />
     <Folder Include="WebRoot\" />
     <Folder Include="Database\" />
-
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
