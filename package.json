@@ -8,6 +8,7 @@
   "scripts": {
      "watch": "npm run start --workspace=src/Client"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
