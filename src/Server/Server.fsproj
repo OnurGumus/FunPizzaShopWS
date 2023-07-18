@@ -29,5 +29,8 @@
     <Folder Include="WebRoot\" />
     <Folder Include="Database\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServerInterfaces\ServerInterfaces.fsproj" />
+  </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
