@@ -86,8 +86,16 @@ let view (ctx:HttpContext) (env:_) (isDev) (body: int -> Task<string>) = task{
         </head>
        
         <body>
-            <header>
-               
+        <header>
+                <img class=logo src = "/assets/icons/logo.svg" alt="Fun Pizza Shop"/>
+                    <a href="/" class='nav-tab'>
+                        <img src="/assets/icons/pizza-slice.svg" alt="Get Pizza" />
+                        <div>Get Pizza</div>
+                    </a>
+                    <a href="/myOrders" class='nav-tab'>
+                        <img src="/assets/icons/bike.svg" alt="My Orders" />
+                        <span>My Orders</span>
+                    </a>
             </header>
             <main>
                 {body}
