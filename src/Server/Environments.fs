@@ -56,17 +56,17 @@ type AppEnv(config: IConfiguration) =
                     |> List.ofSeq
                     |> box
                 elif typeof<'t> = typeof<Topping> then
-                    let topping : Topping = {
+                    let topping1 : Topping = {
                         Id = 1L |> ToppingId.TryCreate |>forceValidate 
                         Name = "Mushrooms" |> ShortString.TryCreate |> forceValidate
                         Price = 1m |> Price.TryCreate |> forceValidate
                     }
-                    let topping : Topping = {
+                    let topping2 : Topping = {
                         Id = 2L |> ToppingId.TryCreate |>forceValidate 
                         Name = "Duck sausage" |> ShortString.TryCreate |> forceValidate
                         Price = 1m |> Price.TryCreate |> forceValidate
                     }
-                    [topping] 
+                    [topping1; topping2] 
                     |> List.ofSeq
                     |> box
                

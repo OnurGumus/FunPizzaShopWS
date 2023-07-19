@@ -13,7 +13,9 @@ let webApp (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task)
                 return! htmlString lay next ctx
             }
 
-    let defaultRoute = viewRoute (Index.view env)
+    let defaultRoute = 
+            // fetch toppings and pizzas here and pass down to index
+            viewRoute (Index.view env)
 
     choose [ 
         routeCi "/" >=> defaultRoute

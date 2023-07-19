@@ -20,5 +20,4 @@ let main _ =
             printf "%A" e
             -1
     finally
-        ()
-       // host.StopAsync().Wait()
+        Setup.host.StopAsync().Wait()
