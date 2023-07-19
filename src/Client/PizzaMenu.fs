@@ -126,7 +126,9 @@ let view (host:LitElement) (model: Model) dispatch =
 
 [<LitElement("fps-pizza-menu")>]
 let LitElement () =
+#if DEBUG
     Hook.useHmr (hmr)
+#endif
     let host, prop =
         LitElement.init (fun config ->
             let split (str: string) : Topping list =

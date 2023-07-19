@@ -9,6 +9,7 @@
     <Compile Include="LoginStore.fs" />
     <Compile Include="Checkout.fs" />
     <Compile Include="Sidebar.fs" />
+    <Compile Include="SignIn.fs" />
     <Compile Include="PizzaMenu.fs" />
     <Compile Include="PizzaItem.fs" />
     <Compile Include="App.fs" />

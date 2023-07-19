@@ -12,6 +12,7 @@ PizzaItem.register ()
 PizzaMenu.register ()
 Sidebar.register ()
 Checkout.register ()
+SignIn.register ()
 
 type Model = Page option
 
