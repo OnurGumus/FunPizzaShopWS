@@ -84,7 +84,7 @@ let configureApp (app: IApplicationBuilder, appEnv) =
         app.UseSpa(fun spa ->
             let path = System.IO.Path.Combine(__SOURCE_DIRECTORY__, "../../.")
             spa.Options.SourcePath <- path
-            spa.Options.DevServerPort <- 5173
+            spa.Options.DevServerPort <- 5183
             spa.UseReactDevelopmentServer(npmScript = "watch"))
 
         app.UseSerilogRequestLogging() |> ignore

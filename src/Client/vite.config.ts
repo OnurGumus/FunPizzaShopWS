@@ -29,11 +29,11 @@ export default defineConfig({
           ignored: [ "**/*.fs"]
         },
 
-        
+        port: 5183,
         https: false,
         strictPort: true,
         hmr: {
-          clientPort: 5173,
+          clientPort: 5183,
           protocol: 'ws'
         }
       }
