@@ -11,6 +11,7 @@ open CustomNavigation
 PizzaItem.register ()
 PizzaMenu.register ()
 Sidebar.register ()
+Checkout.register ()
 
 type Model = Page option
 
