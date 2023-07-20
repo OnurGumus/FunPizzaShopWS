@@ -49,11 +49,18 @@ type ThothSerializer(system: ExtendedActorSystem) =
         match o with
         | :? Common.Event<User.Event> as mesg -> mesg |> userMessageEncode
         | :? User.State as mesg -> mesg |> userStateEncode
+        | e ->
+            Log.Fatal("shouldn't happen {e}", e)
+            Environment.FailFast("shouldn't happen")
+            failwith "shouldn't happen"
+        |> Encode.toString 4
+        |> Encoding.UTF8.GetBytes
 
     override _.Manifest(o: obj) : string =
         match o with
         | :? Common.Event<User.Event> -> "UserMessage"
         | :? User.State -> "UserState"
+        
 
      override _.FromBinary(bytes: byte[], manifest: string) : obj =
         let decode decoder =
