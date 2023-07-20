@@ -57,6 +57,12 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
             let! msg = mailbox.Receive()
             log.Debug("Message {MSG}, State: {@State}", box msg, state)
             match msg with
+            | PersistentLifecycleEvent _
+            | :? Persistence.SaveSnapshotSuccess
+            | LifecycleEvent _ -> return! state |> set
+
+            | SnapshotOffer(snapState: obj) -> return! snapState |> unbox<_> |> set
+
                 // actor level events will come here
             | Persisted mailbox (:? Common.Event<Event> as event) ->
                 let version = event.Version
@@ -82,6 +88,8 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
 
             | _ ->
                 match msg with
+                | :? Persistence.RecoveryCompleted -> return! state |> set
+
                 | :? (Common.Command<Command>) as userMsg ->
                     let ci = userMsg.CorrelationId
                     let commandDetails = userMsg.CommandDetails
