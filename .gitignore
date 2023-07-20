@@ -20,4 +20,4 @@ src/Server/secrets.hocon
 .gitignore
 logs/
 *.report.html
-Test.db
+*.db
