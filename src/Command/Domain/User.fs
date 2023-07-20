@@ -58,6 +58,28 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
             log.Debug("Message {MSG}, State: {@State}", box msg, state)
             match msg with
                 // actor level events will come here
+            | Persisted mailbox (:? Common.Event<Event> as event) ->
+                let version = event.Version
+                SagaStarter.publishEvent mailbox mediator event event.CorrelationId
+
+                let state = {
+                    (apply event.EventDetails state) with
+                        Version = version
+                }
+
+                if (version >= 30L && version % 30L = 0L) then
+                    return! state |> set <@> SaveSnapshot(state)
+                else
+                    return! state |> set
+                    
+            | Recovering mailbox (:? Common.Event<Event> as event) ->
+                return!
+                    {
+                        (apply event.EventDetails state) with
+                            Version = event.Version
+                    }
+                    |> set
+
             | _ ->
                 match msg with
                 | :? (Common.Command<Command>) as userMsg ->
