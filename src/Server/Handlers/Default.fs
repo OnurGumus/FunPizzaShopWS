@@ -3,7 +3,7 @@ open System.Threading.Tasks
 open Giraffe
 open Microsoft.AspNetCore.Http
 open FunPizzaShop.Server.Views
-
+open FunPizzaShop.Server.Handlers.Authentication
 let webApp (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task) =
 
     let viewRoute view = 
@@ -18,6 +18,7 @@ let webApp (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task)
             viewRoute (Index.view env)
 
     choose [ 
+        (authenticationHandler env)
         routeCi "/checkout" >=> defaultRoute 
         routeCi "/" >=> defaultRoute
     ]

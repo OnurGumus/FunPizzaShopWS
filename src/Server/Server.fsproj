@@ -20,6 +20,7 @@
     <Compile Include="Views\Common.fs" />
     <Compile Include="Views\Index.fs" />
     <Compile Include="Views\Layout.fs" />
+    <Compile Include="Handlers\Authentication.fs" />
     <Compile Include="Handlers\Default.fs" />
     <Compile Include="Environments.fs" />
     <Compile Include="Throttling.fs" />
