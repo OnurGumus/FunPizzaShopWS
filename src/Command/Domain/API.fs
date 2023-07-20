@@ -27,6 +27,7 @@ type IDomain =
     
 let api (env: _) (clock: IClock) (actorApi: IActor) =
     let toEvent ci = Common.toEvent clock ci
+    SagaStarter.init actorApi.System actorApi.Mediator (sagaCheck env toEvent actorApi clock)
     User.init env toEvent actorApi |> sprintf "User initialized: %A" |> Log.Debug
 
     System.Threading.Thread.Sleep(1000)

@@ -97,7 +97,7 @@ let configureServices (services: IServiceCollection) =
         .AddCors()
         .AddGiraffe()
         .AddAntiforgery()
-        .AddApplicationInsightsTelemetry()
+      //  .AddApplicationInsightsTelemetry()
         .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(
             CookieAuthenticationDefaults.AuthenticationScheme,

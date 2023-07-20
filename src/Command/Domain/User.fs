@@ -135,7 +135,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                             //          (mailSender.SendVerificationMail email subject body
 
                             let e = LoginSucceeded( Some verificationCode)
-                            return! toEvent ci (v + 1L) e |> box |> Persist
+                            return! toEvent ci (v + 1L) e |> sendToSagaStarter ci |> box |> Persist
 
                         with ex ->
                                 log.Error(ex, "Error sending verification code")
