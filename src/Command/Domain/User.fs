@@ -34,6 +34,7 @@ type State = {
 } with
     interface IDefaultTag
 
+let random = System.Random.Shared
 
 let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsourced<obj>) =
     let config  = env :> IConfiguration
@@ -44,6 +45,47 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
         actor {
             let! msg = mailbox.Receive()
             log.Debug("Message {MSG}, State: {@State}", box msg, state)
+            match msg with
+                // actor level events will come here
+            | _ ->
+                match msg with
+                | :? (Common.Command<Command>) as userMsg ->
+                    let ci = userMsg.CorrelationId
+                    let commandDetails = userMsg.CommandDetails
+                    let v = state.Version
 
+                    match commandDetails with
+                    | Login ->
+                        try
+                            let verificationCode =
+                                VerificationCode.TryCreate(random.Next(100000, 999999).ToString())
+                                |> forceValidate
+
+                            let lastSlash = mailbox.Pid.LastIndexOf("/")
+
+                            let email =
+                                mailbox.Pid
+                                    .Substring(lastSlash + 1)
+                                    |> Uri.UnescapeDataString
+                                    |> UserId.TryCreate
+                                    |> forceValidate
+
+                            let body =  
+                                $"Your verification code is <b>{verificationCode.Value}</b>" 
+                                |> LongString.TryCreate |> forceValidate
+
+                            let subject = "Verification Code" |> ShortString.TryCreate |> forceValidate
+                            //          (mailSender.SendVerificationMail email subject body
+
+                            let e = LoginSucceeded( Some verificationCode)
+                            return! toEvent ci (v + 1L) e |> box |> Persist
+
+                        with ex ->
+                                log.Error(ex, "Error sending verification code")
+                                let e2 = LoginFailed
+                                return! toEvent ci v e2 |> box |> Persist
+                    | _ ->
+                        log.Debug("Unhandled Message {@MSG}", box msg)
+                        return Unhandled
         }
     failwith "not implemented"
