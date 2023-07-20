@@ -42,6 +42,17 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
     let mediatorS = retype mediator
     let sendToSagaStarter = SagaStarter.toSendMessage mediatorS mailbox.Self
     let rec set (state: State) =
+
+        let apply (event: Event) (state:State) =
+            log.Debug("Apply Message {@Event}, State: @{State}", event, state)
+            match event with
+            | LoginSucceeded(code) ->
+                {
+                    state with
+                        Verification = code
+                }
+            | _ -> state
+    
         actor {
             let! msg = mailbox.Receive()
             log.Debug("Message {MSG}, State: {@State}", box msg, state)
@@ -55,6 +66,21 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                     let v = state.Version
 
                     match commandDetails with
+                    | (VefifyLogin incomingCode) ->
+                        let verficiationEvent =
+                            if mailbox.Pid.Contains("@" |> Uri.EscapeDataString) then
+                                if incomingCode.IsNone then VerificationSucceeded
+                                else
+                                match state.Verification with
+                                | Some(code) when code = incomingCode.Value -> VerificationSucceeded
+                                | _ -> VerificationFailed
+                            else
+                                VerificationFailed
+
+                        let verficiationOutcome =
+                            toEvent ci (v + 1L) verficiationEvent |> sendToSagaStarter ci |> box |> Persist
+                        return! verficiationOutcome
+
                     | Login ->
                         try
                             let verificationCode =
@@ -75,6 +101,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                                 |> LongString.TryCreate |> forceValidate
 
                             let subject = "Verification Code" |> ShortString.TryCreate |> forceValidate
+                            printfn "Sending verification code %A" verificationCode
                             //          (mailSender.SendVerificationMail email subject body
 
                             let e = LoginSucceeded( Some verificationCode)
@@ -84,8 +111,11 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                                 log.Error(ex, "Error sending verification code")
                                 let e2 = LoginFailed
                                 return! toEvent ci v e2 |> box |> Persist
-                    | _ ->
+                | _ ->
                         log.Debug("Unhandled Message {@MSG}", box msg)
                         return Unhandled
         }
-    failwith "not implemented"
+    set {
+        Version = 0L
+        Verification = None
+    }
