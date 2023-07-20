@@ -10,6 +10,8 @@
     <Compile Include="Domain\User.fs" />
     <Compile Include="Domain\Serialization.fs" />
     <Compile Include="Domain\API.fs" />
+    <Compile Include="API.fs" />
+
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.fsproj" />

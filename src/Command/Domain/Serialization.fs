@@ -60,7 +60,7 @@ type ThothSerializer(system: ExtendedActorSystem) =
         match o with
         | :? Common.Event<User.Event> -> "UserMessage"
         | :? User.State -> "UserState"
-        
+        | _ -> o.GetType().FullName
 
      override _.FromBinary(bytes: byte[], manifest: string) : obj =
         let decode decoder =
@@ -76,7 +76,7 @@ type ThothSerializer(system: ExtendedActorSystem) =
         | "UserMessage" -> upcast decode userMessageDecode
 
         | _ ->
-        Log.Fatal("manifest {manifest} not found", manifest)
-        Environment.FailFast("shouldn't happen")
-        raise (new SerializationException())
+            Log.Fatal("manifest {manifest} not found", manifest)
+            Environment.FailFast("shouldn't happen")
+            raise (new SerializationException())
 
