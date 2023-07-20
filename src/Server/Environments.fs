@@ -6,10 +6,15 @@ open Microsoft.Extensions.Configuration
 open FunPizzaShop.ServerInterfaces.Query
 open FunPizzaShop.Shared.Model.Pizza
 open FunPizzaShop.Shared.Model
+open FunPizzaShop.ServerInterfaces.Command
+open FunPizzaShop.Shared.Command.Authentication
 
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-type AppEnv(config: IConfiguration) =
- 
+type AppEnv(config: IConfiguration) as self =
+
+    let mutable commandApi =
+        lazy(FunPizzaShop.Command.API.api self NodaTime.SystemClock.Instance)
+
     interface IConfiguration with
         member _.Item
             with get (key: string) = config.[key]
@@ -19,6 +24,19 @@ type AppEnv(config: IConfiguration) =
         member _.GetReloadToken() = config.GetReloadToken()
         member _.GetSection key = config.GetSection(key)
 
+
+    interface IAuthentication with
+        member _.Login: Login = 
+            commandApi.Value.Login
+            
+        member _.Logout: Logout = 
+            fun () -> 
+                async { 
+                    return  Ok()
+                }
+        member _.Verify: Verify = 
+            commandApi.Value.Verify
+    
 
     interface IQuery with
         member _.Query<'t>(?filter, ?orderby,?orderbydesc, ?thenby, ?thenbydesc, ?take, ?skip) =
