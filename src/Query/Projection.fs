@@ -97,6 +97,24 @@ let handleEvent (connectionString: string) (subQueue: ISourceQueue<_>) (envelop:
                         }
                     order.DeliveryStatus <- status |> encode
                     Some(OrderEvent(DeliveryStatusSet (orderId, status)))
+        
+        | :? Command.Common.Event<Delivery.Event> as {
+                    EventDetails = eventDetails
+                    Version = v
+            } -> 
+                match eventDetails with
+                | Delivery.LocationUpdated (orderId, location) ->
+                    let order = 
+                        query {
+                            for o in ctx.Main.Orders do
+                                where (o.OrderId = orderId.Value.Value)
+                                exactlyOne
+                        }
+                    order.CurrentLocation <- location |> encode
+                    Some(OrderEvent(LocationUpdated(orderId, location)))
+                | Delivery.DeliveryStarted _ 
+                | Delivery.Delivered _ ->
+                    None
                 
         | _ -> None
     let user =
