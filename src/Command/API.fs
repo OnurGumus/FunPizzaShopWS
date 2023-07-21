@@ -88,29 +88,29 @@ module User =
 
                 | other -> return failwithf "unexpected event %A" other
             }
-    module Pizza =
-        open FunPizzaShop.Shared.Model.Pizza
-    
-        let order (createSubs) : OrderPizza =
-            fun order  ->
-                async {
-                    Log.Debug("Inside order {@order}", order)
-    
-                    let subscribA =
-                        createSubs (order.OrderId.Value.Value) (Order.PlaceOrder order) (function
-                            | Order.OrderPlaced _ ->true
-                            | _ -> false)
-    
-                    let! subscrib = subscribA
-    
-                    match subscrib with
-                    | {
-                            EventDetails = Order.OrderPlaced _
-                            Version = v
-                        } -> return ()
-    
-                    | other -> return failwithf "unexpected event %A" other
-                }
+module Pizza =
+    open FunPizzaShop.Shared.Model.Pizza
+
+    let order (createSubs) : OrderPizza =
+        fun order  ->
+            async {
+                Log.Debug("Inside order {@order}", order)
+
+                let subscribA =
+                    createSubs (order.OrderId.Value.Value) (Order.PlaceOrder order) (function
+                        | Order.OrderPlaced _ ->true
+                        | _ -> false)
+
+                let! subscrib = subscribA
+
+                match subscrib with
+                | {
+                        EventDetails = Order.OrderPlaced _
+                        Version = v
+                    } -> return ()
+
+                | other -> return failwithf "unexpected event %A" other
+            }
             
 [<Interface>]
 type IAPI =
@@ -124,13 +124,13 @@ let api (env: _) (clock: IClock) =
     let actorApi = Actor.api config
     let domainApi = Domain.API.api env clock actorApi
     let userSubs = createCommandSubscription domainApi domainApi.UserFactory
-
+    let pizzaSubs = createCommandSubscription domainApi domainApi.OrderFactory
     { new IAPI with
         member this.Login: Login = 
             User.login userSubs
         member this.Verify: Verify = 
             User.verify userSubs
         member _.OrderPizza = 
-             failwith "not implemented"
+            Pizza.order pizzaSubs
         member _.ActorApi = actorApi
     }

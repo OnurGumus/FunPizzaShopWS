@@ -146,8 +146,6 @@ let init (connectionString: string) (actorApi: IActor) =
         (readJournal actorApi.System)
             .EventsByTag("default", Offset.Sequence(offsetCount))
             
-    System.Threading.Thread.Sleep(100)
-
     Log.Information("Journal started")
     let subQueue = Source.queue OverflowStrategy.Fail 1024
     let subSink = (Sink.broadcastHub 1024)

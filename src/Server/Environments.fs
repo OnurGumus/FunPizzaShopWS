@@ -8,6 +8,8 @@ open FunPizzaShop.Shared.Model.Pizza
 open FunPizzaShop.Shared.Model
 open FunPizzaShop.ServerInterfaces.Command
 open FunPizzaShop.Shared.Command.Authentication
+open FunPizzaShop.Shared.Command.Pizza
+
 
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 type AppEnv(config: IConfiguration) as self =
@@ -43,6 +45,10 @@ type AppEnv(config: IConfiguration) as self =
                 }
         member _.Verify: Verify = 
             commandApi.Value.Verify
+
+    interface IPizza with
+        member _.Order: OrderPizza = 
+            commandApi.Value.OrderPizza
             
     interface IQuery with
         member _.Query(?filter, ?orderby,?orderbydesc, ?thenby, ?thenbydesc, ?take, ?skip) =
@@ -54,6 +60,7 @@ type AppEnv(config: IConfiguration) as self =
     member _.Reset() = ()
 
     member _.Init() = 
-        if commandApi.Value = Unchecked.defaultof<_> then
+        if commandApi.Value = Unchecked.defaultof<_> 
+                ||  queryApi.Value = Unchecked.defaultof<_>   then
             failwith "AppEnv not initialized"
         
