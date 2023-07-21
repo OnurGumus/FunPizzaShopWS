@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Projection.fs" />
+    <Compile Include="API.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServerInterfaces\ServerInterfaces.fsproj" />
