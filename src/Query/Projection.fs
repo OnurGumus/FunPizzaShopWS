@@ -55,7 +55,67 @@ let inline decode<'T> =
 
 open FunPizzaShop.Command.Domain
 let handleEvent (connectionString: string) (subQueue: ISourceQueue<_>) (envelop: EventEnvelope) =
-    ()
+    Log.Verbose("Handle event {@Envelope}", envelop)
+
+    let offsetValue = (envelop.Offset :?> Sequence).Value
+    let lastSlash = envelop.PersistenceId.LastIndexOf("/")
+    let id =
+        envelop.PersistenceId
+            .Substring(lastSlash + 1)
+            |> System.Uri.UnescapeDataString
+
+    let dataEvent =
+        match envelop.Event with
+        | :? Command.Common.Event<User.Event> -> None
+        | :? Command.Common.Event<Order.Event> as {
+                EventDetails = eventDetails
+                Version = v
+            } -> 
+            match eventDetails with
+                | Order.OrderPlaced order ->
+                    let encoded =  order.Pizzas |> encode
+                    let row = ctx.Main.Orders.``Create(CreatedTime, CurrentLocation, DeliveryAddress, DeliveryLocation, DeliveryStatus, Offset, Pizzas, UserId, Version)``(
+                        order.CreatedTime,
+                        order.CurrentLocation |> encode,
+                        order.DeliveryAddress |> encode,
+                        order.DeliveryLocation|> encode,
+                        order.DeliveryStatus |> encode,
+                        offsetValue,
+                        encoded,
+                        order.UserId.Value,
+                        v
+                    )
+                    row.OrderId <- order.OrderId.Value.Value
+                    Some(OrderEvent(OrderPlaced order))
+                | Order.DeliveryStatusSet (orderId,status) ->
+                    let order = 
+                        query {
+                            for o in ctx.Main.Orders do
+                                where (o.OrderId = id)
+                                exactlyOne
+                        }
+                    order.DeliveryStatus <- status |> encode
+                    Some(OrderEvent(DeliveryStatusSet (orderId, status)))
+                
+        | _ -> None
+    let user =
+            query {
+                for o in ctx.Main.Offsets do
+                    where (o.OffsetName = "Users")
+                    select o
+                    exactlyOne
+            }
+    
+    user.OffsetCount <- offsetValue
+    ctx.SubmitUpdates()
+    match dataEvent with
+    | Some dataEvent -> subQueue.OfferAsync(dataEvent).Wait()
+    | _ -> ()
+
+
+
+
+
 
 
 open Command.Actor

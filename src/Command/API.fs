@@ -88,12 +88,36 @@ module User =
 
                 | other -> return failwithf "unexpected event %A" other
             }
-
+    module Pizza =
+        open FunPizzaShop.Shared.Model.Pizza
+    
+        let order (createSubs) : OrderPizza =
+            fun order  ->
+                async {
+                    Log.Debug("Inside order {@order}", order)
+    
+                    let subscribA =
+                        createSubs (order.OrderId.Value.Value) (Order.PlaceOrder order) (function
+                            | Order.OrderPlaced _ ->true
+                            | _ -> false)
+    
+                    let! subscrib = subscribA
+    
+                    match subscrib with
+                    | {
+                            EventDetails = Order.OrderPlaced _
+                            Version = v
+                        } -> return ()
+    
+                    | other -> return failwithf "unexpected event %A" other
+                }
+            
 [<Interface>]
 type IAPI =
     abstract ActorApi: IActor
     abstract Login: Login
     abstract Verify: Verify
+    abstract OrderPizza: OrderPizza
 
 let api (env: _) (clock: IClock) =
     let config = env :> IConfiguration
@@ -106,5 +130,7 @@ let api (env: _) (clock: IClock) =
             User.login userSubs
         member this.Verify: Verify = 
             User.verify userSubs
+        member _.OrderPizza = 
+             failwith "not implemented"
         member _.ActorApi = actorApi
     }
