@@ -15,6 +15,9 @@ type AppEnv(config: IConfiguration) as self =
     let mutable commandApi =
         lazy(FunPizzaShop.Command.API.api self NodaTime.SystemClock.Instance)
 
+    do 
+        DB.init config
+
     interface IConfiguration with
         member _.Item
             with get (key: string) = config.[key]
@@ -92,4 +95,9 @@ type AppEnv(config: IConfiguration) as self =
                     failwith "Not implemented"
             async { return res :?> list<'t> }
 
-    member _.Reset()  = ()
+    member _.Reset() = ()
+
+    member _.Init() = 
+        if commandApi.Value = Unchecked.defaultof<_> then
+            failwith "AppEnv not initialized"
+        

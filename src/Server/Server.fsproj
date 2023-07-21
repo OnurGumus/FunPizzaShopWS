@@ -22,6 +22,7 @@
     <Compile Include="Views\Layout.fs" />
     <Compile Include="Handlers\Authentication.fs" />
     <Compile Include="Handlers\Default.fs" />
+    <Compile Include="DB.fs" />
     <Compile Include="Environments.fs" />
     <Compile Include="Throttling.fs" />
     <Compile Include="Serilog.fs" />
