@@ -183,4 +183,3 @@ let init (connectionString: string) (actorApi: IActor) =
     System.Threading.Thread.Sleep(1000)
     Log.Information("Projection init finished")
     subRunnable
-
