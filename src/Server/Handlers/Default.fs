@@ -19,6 +19,10 @@ let webApp (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task)
     let defaultRoute = 
             // fetch toppings and pizzas here and pass down to index
             viewRoute (Index.view env)
+
+    let trackOrder orderId = 
+        viewRoute (TrackOrder.view env orderId)
+
     let auth = requiresAuthentication (challenge CookieAuthenticationDefaults.AuthenticationScheme)
     choose [ 
         (authenticationHandler env)
@@ -27,6 +31,11 @@ let webApp (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task)
         routex "^.*OrderPizza.*$"
             >=> auth
             >=>(pizzaHandler env)
+
+        routex "^.*socket.*$"
+            >=> auth
+            >=>  TrackOrder.brideServer env
+        routeCif "/trackOrder/%s"  (fun orderId -> auth >=>(trackOrder orderId))
     ]
 
 let webAppWrapper (env:_) (layout: HttpContext -> (int -> Task<string>) -> string Task) =

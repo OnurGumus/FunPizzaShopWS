@@ -14,6 +14,24 @@ type Order = {
 }
 
 
+module TrackOrder =
+    open Model.Pizza
+
+    // Messages processed on the server
+    module ServerToClient =
+
+        type Msg =
+            | ServerConnected
+            | OrderFound of Order
+            | LocationUpdated of OrderId * LatLong
+            | DeliveryStatusSet of OrderId * DeliveryStatus
+
+    module ClientToServer =
+        type Msg =
+            | TrackOrder of OrderId
+
+    let endpoint = "/socket/track-order"
+
 
 module Route =
     /// Defines how routes are generated on server and mapped from client
