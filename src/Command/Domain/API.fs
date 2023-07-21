@@ -17,7 +17,14 @@ open Microsoft.Extensions.Configuration
 
 let sagaCheck (env:_) toEvent actorApi (clock: IClock) (o: obj) =
     match o with
+    | :? (Event<Order.Event>) as e ->
+        match e with
+        | { EventDetails = Order.OrderPlaced _  } ->
+            [ (OrderSaga.factory env toEvent actorApi clock, id |> Some |> PrefixConversion) ]
+        | _ -> []
+    
     | _ -> []
+
 
 [<Interface>]
 type IDomain =
@@ -31,6 +38,7 @@ let api (env: _) (clock: IClock) (actorApi: IActor) =
     SagaStarter.init actorApi.System actorApi.Mediator (sagaCheck env toEvent actorApi clock)
     User.init env toEvent actorApi |> sprintf "User initialized: %A" |> Log.Debug
     Order.init env toEvent actorApi |> sprintf "Order initialized: %A" |> Log.Debug
+    OrderSaga.init env toEvent actorApi clock |> sprintf "OrderSaga initialized: %A" |> Log.Debug
 
     System.Threading.Thread.Sleep(1000)
     { new IDomain with

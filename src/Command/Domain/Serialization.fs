@@ -37,6 +37,11 @@ let orderMessageEncode =
 let orderMessageDecode =
     Decode.Auto.generateDecoder<Common.Event<Order.Event>> (extra = extraThoth)
 
+let orderSagaMessageEncode =
+    Encode.Auto.generateEncoder<OrderSaga.Event> (extra = extraThoth)
+let orderSagaMessageDecode =
+    Decode.Auto.generateDecoder<OrderSaga.Event> (extra = extraThoth)
+
 
 
 /// State encoding
@@ -45,6 +50,8 @@ let userStateDecode = Decode.Auto.generateDecoder<User.State> (extra = extraThot
 
 let orderStateEncode = Encode.Auto.generateEncoder<Order.State> (extra = extraThoth)
 let orderStateDecode = Decode.Auto.generateDecoder<Order.State> (extra = extraThoth)
+let orderSagaStateEncode = Encode.Auto.generateEncoder<OrderSaga.State> (extra = extraThoth)
+let orderSagaStateDecode = Decode.Auto.generateDecoder<OrderSaga.State> (extra = extraThoth)
 
 
 type ThothSerializer(system: ExtendedActorSystem) =
@@ -59,6 +66,8 @@ type ThothSerializer(system: ExtendedActorSystem) =
 
         | :? Common.Event<Order.Event> as mesg -> mesg |> orderMessageEncode
         | :? Order.State as mesg -> mesg |> orderStateEncode
+        | :? OrderSaga.Event as mesg -> mesg |> orderSagaMessageEncode
+        | :? OrderSaga.State as mesg -> mesg |> orderSagaStateEncode
 
         | e ->
             Log.Fatal("shouldn't happen {e}", e)
@@ -73,6 +82,8 @@ type ThothSerializer(system: ExtendedActorSystem) =
         | :? User.State -> "UserState"
         | :? Common.Event<Order.Event> -> "OrderMessage"
         | :? Order.State -> "OrderState"
+        | :? OrderSaga.Event -> "OrderSagaMessage"
+        | :? OrderSaga.State -> "OrderSagaState"
         | _ -> o.GetType().FullName
 
      override _.FromBinary(bytes: byte[], manifest: string) : obj =
@@ -89,6 +100,9 @@ type ThothSerializer(system: ExtendedActorSystem) =
         | "UserMessage" -> upcast decode userMessageDecode
         | "OrderState" -> upcast decode orderMessageDecode
         | "OrderMessage" -> upcast decode orderMessageDecode
+        | "OrderSagaMessage" -> upcast decode orderSagaMessageDecode
+        | "OrderSagaState" -> upcast decode orderSagaStateDecode
+
 
         | _ ->
             Log.Fatal("manifest {manifest} not found", manifest)
