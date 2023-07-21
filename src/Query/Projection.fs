@@ -72,6 +72,7 @@ let handleEvent (connectionString: string) (subQueue: ISourceQueue<_>) (envelop:
                 Version = v
             } -> 
             match eventDetails with
+                | Order.OrderAborted _ -> None
                 | Order.OrderPlaced order ->
                     let encoded =  order.Pizzas |> encode
                     let row = ctx.Main.Orders.``Create(CreatedTime, CurrentLocation, DeliveryAddress, DeliveryLocation, DeliveryStatus, Offset, Pizzas, UserId, Version)``(
