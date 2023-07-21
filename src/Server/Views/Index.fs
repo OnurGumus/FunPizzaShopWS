@@ -11,7 +11,7 @@ let extraThoth = Extra.empty |> Extra.withInt64 |> Extra.withDecimal
 
 let view (env:_) (ctx:HttpContext) (dataLevel: int) = task{
     let query = env :> IQuery
-    let! pizzas = query.Query<PizzaSpecial> (filter = Greater("BasePrice",1m), take = 10) 
+    let! pizzas = query.Query<PizzaSpecial> (filter = Greater("BasePrice",10m), take = 10) 
     let! toppings = query.Query<Topping> ()
     let serializedToppings = Encode.Auto.toString (toppings, extra = extraThoth)
     let li = 

@@ -82,8 +82,6 @@ let init (connectionString: string) (actorApi: IActor) =
                 select o.OffsetCount
                 exactlyOne
         }
-    failwith "Not implemented"
-
     let source =
         (readJournal actorApi.System)
             .EventsByTag("default", Offset.Sequence(offsetCount))
