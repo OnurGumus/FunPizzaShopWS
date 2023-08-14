@@ -34,7 +34,7 @@ let configure errorHandler = {
 type LogUserNameMiddleware(next: RequestDelegate) =
     member _.Invoke(context: HttpContext) : Task =
         LogContext.PushProperty("UserName", context.User.Identity.Name) |> ignore
-        next.Invoke context
+        failwith "invoke next"
         
 let configureMiddleware _ (services:IServiceProvider) (loggerConfiguration:LoggerConfiguration) =
 

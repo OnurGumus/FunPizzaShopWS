@@ -22,8 +22,9 @@ open FunPizzaShop.Server.Handlers.Default
 open HTTP
 open System.Globalization
 
-CultureInfo.DefaultThreadCurrentCulture <- CultureInfo.InvariantCulture
-CultureInfo.DefaultThreadCurrentUICulture <- CultureInfo.InvariantCulture
+
+failwith "Set current thread culture to invariant"
+
 
 bootstrapLogger()
 
@@ -32,8 +33,8 @@ type Self = Self
 let errorHandler (ex: Exception) (ctx: HttpContext) =
     Log.Error(ex, "Error Handler")
     match ex with
-    | :? System.Text.Json.JsonException -> clearResponse >=> setStatusCode 400 >=> text ex.Message
-    | _ -> clearResponse >=> setStatusCode 500 >=> text ex.Message
+    | :? System.Text.Json.JsonException -> clearResponse >=>  failwith "set status code" >=> text ex.Message
+    | _ -> clearResponse >=> failwith "set status code" >=> text ex.Message
 
 let configureCors (builder: CorsPolicyBuilder) =
         #if DEBUG
@@ -58,9 +59,9 @@ let configureApp (app: IApplicationBuilder, appEnv) =
         .UseDefaultFiles()
         .UseAuthentication()
         .UseAuthorization()
-        .UseMiddleware<LogUserNameMiddleware>()
-        .Use(headerMiddleware)
     |> ignore
+    failwith "use LogUserNameMiddleware and headerMiddleware"
+
 
 
     let layout ctx = Layout.view ctx (appEnv) (env.IsDevelopment())
@@ -76,9 +77,9 @@ let configureApp (app: IApplicationBuilder, appEnv) =
      | false -> app.UseHttpsRedirection())
         .UseCors(configureCors)
         .UseStaticFiles(staticFileOptions)
-        .UseThrottlingTroll(Throttling.setOptions)
         .UseWebSockets() 
         .UseGiraffe(handler)
+    failwith "use throttling throll"
 
 let configureServices (services: IServiceCollection) =
     services
@@ -92,7 +93,7 @@ let configureServices (services: IServiceCollection) =
         .AddCookie(
             CookieAuthenticationDefaults.AuthenticationScheme,
             fun options ->
-                options.SlidingExpiration <- true
+                failwith "add SlidingExpiration"
                 options.ExpireTimeSpan <- TimeSpan.FromDays(7)
         )
     |> ignore
@@ -133,7 +134,7 @@ let main args =
             .AddHoconFile("secrets.hocon", true)
             .AddEnvironmentVariables()
     
-    let config = configBuilder.Build()
+    let config = failwith "build config"
 
     let mutable ret = 0
     let appEnv = obj()
@@ -144,5 +145,5 @@ let main args =
             Log.Fatal(ex, "Host terminated unexpectedly")
             ret <- -1
     finally
-        Log.CloseAndFlush()
+        failwith "Log CloseAndFlush"
     ret

@@ -5,5 +5,5 @@ open Microsoft.AspNetCore.Http
 
 let view (env:_) (ctx:HttpContext) (dataLevel: int) = task{
     return
-        html $""" Hello World! """
+        failwith "print hello world"
 }

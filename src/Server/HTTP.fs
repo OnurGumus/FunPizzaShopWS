@@ -72,8 +72,7 @@ let headerMiddleware = fun (context: HttpContext) (next: Func<Task>) ->
                 trusted-types *;\
                 ")
     | _ -> ()
-   
-    next.Invoke()
+    failwith "invoke next"
             
 let provider = FileExtensionContentTypeProvider()
 
@@ -88,11 +87,7 @@ let staticFileOptions =
                 fun (context) ->
             #if !DEBUG
                     let headers = context.Context.Response.GetTypedHeaders()
-                    headers.CacheControl <-
-                        Microsoft.Net.Http.Headers.CacheControlHeaderValue(
-                            Public = true,
-                            MaxAge = TimeSpan.FromDays(1)
-                        )
+                    headers.CacheControl <- failwith "TODO"
             #else
                     ()
             #endif

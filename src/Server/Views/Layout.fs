@@ -90,7 +90,7 @@ let view (ctx:HttpContext) (env:_) (isDev) (body: int -> Task<string>) = task{
                
             </header>
             <main>
-                {body}
+                {failwith "what to put here"}
             </main>
         </body>
     </html>"""
