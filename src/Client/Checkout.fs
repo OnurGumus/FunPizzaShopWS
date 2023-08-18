@@ -35,7 +35,7 @@ let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
     | Order.NoOrder -> ()
     | Order.GetPizzas ->
         let pizzaString:string = history.state |> unbox<string>
-        let pizzas = Decode.Auto.fromString<Pizza list>(pizzaString,extra = extraEncoders)
+        let pizzas = failwith "decode pizzas"
         match pizzas with
         | Ok pizzas ->
             dispatch (SetPizzas pizzas) 
@@ -43,17 +43,17 @@ let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
         
     | Order.PlaceOrder order ->
         async {
-            do! Server.api.OrderPizza order
+            failwith "call server api"
             dispatch OrderPlaced
-            window.location.href <- sprintf "/trackOrder/%s" order.OrderId.Value.Value
+            failwith "navigate to trackOrder/OrderId"
         }
-        |> Async.StartImmediate
+        |> failwith "start async"
 
     | Order.RequestLogin ->
         host.dispatchCustomEvent (Constants.Events.RequestLogin, null,true,true,true)
         
     | Order.SubscribeToLogin ->
-        (LoginStore.store.Subscribe (fun (model:LoginStore.Model) -> dispatch (SetLoginStatus model.UserId))  )
+        (LoginStore.store.Subscribe (fun (model:LoginStore.Model) -> failwith "update login status")  )
         |> ignore
 
     | Order.OrderList orders ->
@@ -104,7 +104,7 @@ let view (host:LitElement) (model:Model) dispatch =
             Pizzas = pizzas
             Address = address
         }
-        dispatch (OrderCheckedOut order)
+        failwith "dispatch order checked out"
 
     html $"""
         <div class='main'>

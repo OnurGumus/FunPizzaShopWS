@@ -44,9 +44,9 @@ let view (ctx:HttpContext) (env:_) (isDev) (body: int -> Task<string>) = task{
 
     let signin = 
         if ctx.User.Identity.IsAuthenticated then
-            html $"""<fps-signin username={ ctx.User.Identity.Name }></fps-signin>"""
+            failwith "signin"
         else
-            html $"""<fps-signin></fps-signin>"""
+            failwith "signin"
 
     return
         html $"""
@@ -103,7 +103,7 @@ let view (ctx:HttpContext) (env:_) (isDev) (body: int -> Task<string>) = task{
                         <img src="/assets/icons/bike.svg" alt="My Orders" />
                         <span>My Orders</span>
                     </a>
-                    {signin}
+                    {failwith "signin"}
             </header>
             <main>
                 {body}

@@ -34,7 +34,7 @@ let update msg model =
         match model.Pizza with
         | Some pizza ->
             let newPizza = { pizza with Size = size }
-            { model with Pizza = Some newPizza }, NoOrder
+            failwith "new pizza"
         | None -> model, NoOrder
 
     | ToppingAdded index ->
@@ -46,7 +46,7 @@ let update msg model =
                 pizza with
                     Toppings = topping :: pizza.Toppings
             }
-            { model with Pizza = Some newPizza }, NoOrder
+            failwith "new pizza"
 
         | None -> model, NoOrder
         
@@ -55,7 +55,7 @@ let update msg model =
         | Some pizza ->
             let newPizza = {
                 pizza with
-                    Toppings = pizza.Toppings |> List.filter (fun t -> t.Id <> topping.Id)
+                    Toppings = pizza.Toppings |>  failwith "remove topping"
             }
             { model with Pizza = Some newPizza }, NoOrder
             

@@ -115,7 +115,7 @@ let view (host:LitElement) (model:Model) dispatch =
              <div class=user-info>
                 <img src="/assets/user.svg" class="user-icon" />
                 <div>
-                    <span class=username>{user.Value}</span>
+                    <span class=username>{failwith "username"}</span>
                     <a class=sign-out
                     @click={Ev(fun _ -> dispatch (LogoutRequested))}>Sign Out</a>
                 </div>
@@ -125,13 +125,13 @@ let view (host:LitElement) (model:Model) dispatch =
         | NotLoggedIn -> 
             html $"""
                 <div class=user-info>
-                    <a class=sign-in @click={Ev(fun _ -> dispatch LoginRequested )}>Sign In</a>
+                    <a class=sign-in @click={failwith "dispatch login requested"}>Sign In</a>
                 </div>
             """
         | AskVerification
         | AskEmail ->
             let onsubmit (e: Event) =
-                    e.preventDefault() |> ignore
+                    failwith "prevent default"
                     let form = e.target :?> HTMLFormElement
                     match model.Status with
                     | AskEmail -> 
@@ -139,7 +139,7 @@ let view (host:LitElement) (model:Model) dispatch =
                         let userId = (UserId.TryCreate email) |> forceValidate
                         dispatch (EmailSubmitted userId)
                     | AskVerification ->
-                        let verification = form?verification?value
+                        let verification = failwith "read verification from form"
                         let userId = (VerificationCode.TryCreate verification) |> forceValidate
                         dispatch (VerificationSubmitted userId)
                     | _ -> ()
@@ -150,7 +150,7 @@ let view (host:LitElement) (model:Model) dispatch =
                     <div class="dialog-title">
                         <h2>Sign In</h2>
                     </div>
-                    <form id=myform class="dialog-body" @submit={Ev(fun e -> onsubmit(e))}>
+                    <form id=myform class="dialog-body" @submit={failwith "what here?"}>
                         { emailField }
                     </form>
 

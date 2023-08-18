@@ -35,12 +35,12 @@ type Order =
 let init (userName:string option) () =
         match userName with
         | Some name -> 
-            let userId = name |> UserId.TryCreate |> forceValidate |> Some
+            let userId = failwith "create user id"
             { 
-                Status = LoggedIn (userId.Value)
+                Status = LoggedIn (failwith "user")
                 UserId = userId ; 
                 IsBusy = false
-            } , (PublishLogin (userId.Value))
+            } , failwith "publish login order"
         
         | None ->  
             { 
@@ -52,17 +52,17 @@ let init (userName:string option) () =
 
 let update msg model =
     match msg with
-        | LoginRequested -> { model with Status =Status.AskEmail }, NoOrder
-        | LoginCancelled -> { model with Status =Status.NotLoggedIn }, NoOrder
+        | LoginRequested -> { model with Status = failwith "status" }, NoOrder
+        | LoginCancelled -> { model with Status = failwith "status" }, NoOrder
         | EmailSubmitted email -> 
-            {model with UserId =  Some email }, Order.Login email
+            {model with UserId =  Some email }, failwith "login order"
         | EmailSent -> { model with Status =Status.AskVerification }, NoOrder
         | VerificationSubmitted code -> 
             model, Order.Verify (model.UserId.Value, code)
-        | EmailFailed ex -> model, Order.ShowError ex
-        | VerificationSuccessful -> { model with Status =Status.LoggedIn model.UserId.Value }, NoOrder
+        | EmailFailed ex -> model, failwith "show error"
+        | VerificationSuccessful -> { model with Status =Status.LoggedIn (failwith "user") }, NoOrder
         | VerificationFailed -> model,  Order.ShowError "Verification failed"
-        | LogoutSuccess -> { model with Status =Status.NotLoggedIn }, NoOrder
+        | LogoutSuccess -> { model with Status = failwith "status" }, NoOrder
         | LogoutError ex -> { model with Status =Status.NotLoggedIn }, Order.ShowError ex
         | LogoutRequested -> 
             model, Order.Logout model.UserId.Value

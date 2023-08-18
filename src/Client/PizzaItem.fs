@@ -28,12 +28,8 @@ let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
 [<HookComponent>]
 let view (host:LitElement) (model:Model) dispatch =
     printf "%A" model
-    Hook.useEffectOnce (fun () -> 
-        host?addEventListener("click", (fun (e: MouseEvent) -> 
-            host.dispatchCustomEvent (Events.PizzaSelected ,model.PizzaSpecial, true, true,true)
-        )) |> ignore
-    )
-    Lit.nothing
+    failwith "by using useEffectOnce dispatch the pizza selected event on click"
+    failwith "render nothing"
     
 [<LitElement("fps-pizza-item")>]
 let LitElement () =
@@ -58,13 +54,13 @@ let LitElement () =
     
     let program =
         Program.mkHiddenProgramWithOrderExecute 
-            (init (prop.special.Value.Value)) (update) (execute host)
+            (init (prop.special.Value.Value)) (update) (failwith "call execute")
     #if DEBUG
             |> Program.withDebugger
             |> Program.withConsoleTrace
     #endif
 
     let model, dispatch = Hook.useElmish program
-    view host model dispatch
+    failwith "view"
 
 let register () = ()

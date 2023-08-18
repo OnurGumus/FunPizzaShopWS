@@ -28,7 +28,7 @@ type Order =
       
 let init () =  
         { Pizzas = []; UserId = None; PendingOrder = None } , 
-        [GetPizzas;SubscribeToLogin] |> OrderList
+        [GetPizzas; failwith "subcribe to login"] |> OrderList
 
 let rec update msg model =
     match msg with
@@ -36,7 +36,7 @@ let rec update msg model =
     | SetPizzas pizzas -> ({model with Pizzas = pizzas}: Model), NoOrder
     | OrderCheckedOut orderDetails -> 
             if model.UserId.IsNone then
-                {model with PendingOrder = Some orderDetails}, RequestLogin
+                failwith "set pending order", RequestLogin
             else
                 let order :FunPizzaShop.Shared.Model.Pizza.Order = {
                         DeliveryAddress = orderDetails.Address

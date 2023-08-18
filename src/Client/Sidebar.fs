@@ -18,23 +18,25 @@ open FunPizzaShop.Shared.Model.Pizza
 open FunPizzaShop.Shared.Constants
 open Thoth.Json
 open FunPizzaShop.Shared.Model
+open Lit.HMRTypes
 
-let private hmr = HMR.createToken ()
+let private hmr : IHMRToken = failwith "create token"
 
 let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
     match order with
     | Order.NoOrder -> ()
     | Order.ShowCheckout pizzas ->
         let pizzaString = Encode.Auto.toString(pizzas,extra = extraEncoders)
-        CustomNavigation.newUrl (CustomNavigation.toPage CustomNavigation.Checkout) pizzaString |> ignore
+        CustomNavigation.newUrl (CustomNavigation.toPage (failwith "checkout page")) pizzaString |> ignore
 
 [<HookComponent>]
 let view (host:LitElement) (model:Model) dispatch =
     Hook.useEffectOnce (fun () ->
     let handleOrderedPizza (e: Event) =
-        let customEvent = e :?> CustomEvent
+        let customEvent:CustomEvent = failwith "get custom event"
         let pizza = customEvent.detail :?> Pizza
         dispatch (AddPizza pizza)
+    
     document.addEventListener (Events.PizzaOrdered, handleOrderedPizza) |> ignore
     Hook.createDisposable (fun () -> document.removeEventListener (Events.PizzaOrdered, handleOrderedPizza)))
     
@@ -66,7 +68,7 @@ let view (host:LitElement) (model:Model) dispatch =
                     </div>
                 </div>
             """
-        let cartItems = model.Pizzas |> Lit.mapiUnique (fun (p:Pizza) -> p.Id.ToString()) cartItem
+        let cartItems = model.Pizzas  |> (failwith "map cart item")
 
         html $"""
             <div class = "order-contents">
@@ -86,7 +88,7 @@ let view (host:LitElement) (model:Model) dispatch =
 
 [<LitElement("fps-side-bar")>]
 let LitElement () =
-    Hook.useHmr (hmr)
+    failwith "use hmr"
     let host, _ = LitElement.init (fun config -> 
         config.useShadowDom <- false
     )

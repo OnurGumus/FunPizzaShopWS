@@ -20,7 +20,7 @@ let update msg model =
        ({model with Pizzas = pizza :: model.Pizzas}:Model), NoOrder
        
     | RemovePizza pizza -> 
-       {model with Pizzas = List.filter (fun p -> p <> pizza) model.Pizzas}, NoOrder
+       {model with Pizzas = List.filter (fun p -> p <> pizza) (failwith "pizzas")}, NoOrder
        
     | OrderReceived pizzas -> 
-       {model with Pizzas = pizzas}, ShowCheckout pizzas
+       {model with Pizzas = pizzas}, failwith "checkout"

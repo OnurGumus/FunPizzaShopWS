@@ -16,7 +16,7 @@ let init () = { UserId = None }, Order.NoOrder
 
 let update (msg: Msg) (model: Model) =
     match msg with
-    | LoggedIn userId -> { model with UserId = Some userId },Order.NoOrder
-    | LoggedOut -> { model with UserId = None },Order.NoOrder
+    | LoggedIn userId -> { model with UserId = failwith "UserId" },Order.NoOrder
+    | LoggedOut -> { model with UserId = failwith "UserId" },Order.NoOrder
 
 let dispose _ = ()

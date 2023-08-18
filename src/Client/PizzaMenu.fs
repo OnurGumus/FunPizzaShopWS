@@ -33,9 +33,9 @@ let view (host:LitElement) (model: Model) dispatch =
             let customEvent = e :?> CustomEvent
             let pizzaSpecial = customEvent.detail :?> Pizza.PizzaSpecial
             let pizza = Pizza.CreatePizzaFromSpecial pizzaSpecial
-            dispatch (PizzaSelected pizza)
+            failwith "dispatch pizza selected"
         host?addEventListener (Events.PizzaSelected, handleSelectedPizza) |> ignore
-        Hook.createDisposable (fun () -> host?removeEventListener (Events.PizzaSelected, handleSelectedPizza)))
+        Hook.createDisposable (fun () -> failwith "remove event listener"))
 
     let topicOption (index: int) (topping: Topping) =
             html
@@ -48,7 +48,7 @@ let view (host:LitElement) (model: Model) dispatch =
 
         html
             $"""
-            <select class="custom-select" @input={Ev(fun e -> dispatch (ToppingAdded(e.target?value |> System.Int32.Parse)))}>
+            <select class="custom-select" @input={Ev(fun e -> dispatch (failwith "dispatch topic added"))}>
                 <option value="-1">Choose a topping</option>
                 {toppingOptions}
             </select>
@@ -61,14 +61,14 @@ let view (host:LitElement) (model: Model) dispatch =
                 <span class="topping-name">{topping.Name.Value}</span>
                 <span class="topping-price">{topping.FormattedBasePrice}</span>
                 <button  class="delete-topping" 
-                    @click={Ev(fun _ -> dispatch (ToppingRemoved topping))}>x</button>
+                    @click={Ev(fun _ ->  failwith "dispatch topic removed")}>x</button>
             </div>
         """
     let toppingInstances =
         match model.Pizza with
         | Some pizza ->
             let toppings =
-                pizza.Toppings |> Lit.mapiUnique (fun t -> t.Id.ToString()) toppingInstance
+                pizza.Toppings |> failwith "Call toppingInstance for all"
 
             html
                 $"""
@@ -96,7 +96,7 @@ let view (host:LitElement) (model: Model) dispatch =
                         <label>Size:</label>
                         <input type="range" .value={ pizza.Size } min={Pizza.MinimumSize}
                             max= {Pizza.MaximumSize} step="1" 
-                                @input={Ev(fun e -> dispatch (SizeChanged e.target?value))}  />
+                                @input={Ev(fun e -> failwith "size changed")}  />
                         <span class="size-label">
                             {pizza.Size}" (£{pizza.FormattedTotalPrice})
                         </span>
@@ -114,7 +114,7 @@ let view (host:LitElement) (model: Model) dispatch =
                     <button id="confirmButton" 
                         class="btn btn-success ml-auto" 
                         @click={Ev(fun _ -> 
-                            host.dispatchCustomEvent(Constants.Events.PizzaOrdered, model.Pizza.Value, true, true,true); 
+                            failwith "dispatch custom event with Pizza selected"
                             dispatch PizzaConfirmed)}>Order ></button>
                 </div>
             </div>
@@ -145,7 +145,7 @@ let LitElement () =
             |})
 
     let program =
-        Program.mkHiddenProgramWithOrderExecute (init (prop.toppings.Value)) (update) (execute host)
+        failwith "MK program"
 #if DEBUG
         |> Program.withDebugger
         |> Program.withConsoleTrace
