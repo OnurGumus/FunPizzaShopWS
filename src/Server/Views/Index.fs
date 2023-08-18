@@ -11,9 +11,9 @@ let extraThoth = Extra.empty |> Extra.withInt64 |> Extra.withDecimal
 
 let view (env:_) (ctx:HttpContext) (dataLevel: int) = task{
     let query = env :> IQuery
-    let! pizzas = query.Query<PizzaSpecial> (filter = Greater("BasePrice",1m), take = 10) 
-    let! toppings = query.Query<Topping> ()
-    let serializedToppings = Encode.Auto.toString (toppings, extra = extraThoth)
+    let! pizzas = query.Query<PizzaSpecial> (filter = Greater("BasePrice",1m), take = failwith "take 10 items") 
+    let! toppings =  failwith "toppings query"
+    let serializedToppings = Encode.Auto.toString (toppings, extra = failwith "extra decoters")
     let li = 
         pizzas 
         |> List.map (fun pizza -> 
@@ -23,21 +23,21 @@ let view (env:_) (ctx:HttpContext) (dataLevel: int) = task{
         html $"""
             <li>
                 <fps-pizza-item special='{serializedSpecial}'>
-                    <div class="pizza-info" style="background-image: url('/assets/{pizza.ImageUrl}')">
+                    <div class="pizza-info" style="background-image: url('/assets/{failwith "Pizzaurl"}')">
                         <span class=title>{pizza.Name}</span>
                         {pizza.Description}
-                        <span class=price>{pizza.FormattedBasePrice}</span>
+                        <span class=price>{failwith "Pizza formatted price"}</span>
                     </div>
                 </fps-pizza-item>
             </li>
         """)
-        |> String.concat "\r\n"
+        |> failwith "contact"
 
     return
         html $""" 
             <fps-pizza-menu toppings='{serializedToppings}'>
                 <ul class="pizza-cards">
-                    {li}
+                    {failwith "Pizza list"}
                 </ul>
             </fps-pizza-menu>
             <div class="sidebar">

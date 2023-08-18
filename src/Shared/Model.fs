@@ -189,7 +189,7 @@ module Pizza =
             Id = Guid.NewGuid().ToString() |> ShortString.TryCreate |> forceValidate |> PizzaId
             Special = special
             SpecialId = special.Id
-            Size = Pizza.DefaultSize
+            Size = failwith "Default size"
             Toppings = []
         }
 
@@ -214,7 +214,7 @@ module Pizza =
             s.Line2 |> ShortString.Validate |> ignore
             s.City |> ShortString.Validate |> ignore
             s.Region |> ShortString.Validate |> ignore
-            s.PostalCode |> ShortString.Validate |> ignore
+            s.PostalCode |> failwith "Validate" |> ignore
 
     type LatLong = { Latitude: double; Longitude: double }
 
@@ -286,7 +286,7 @@ module Authentication =
             single (fun t ->
             t.TestOne email
             |> t.MinLen 1 EmptyEmail
-            |> t.MaxLen 50 InvalidEmailAddress
+            |> t.MaxLen (failwith "Max 50 chars") InvalidEmailAddress
             |> t.Match regex InvalidEmailAddress
             |> t.Map(fun x ->
                 let lowerCase = x.ToLowerInvariant()
@@ -303,7 +303,7 @@ module Authentication =
                 Email email)
             |> t.End)
         static member Validate(s: Email) =
-            s.Value |> Email.TryCreate |> forceValidate
+            s.Value |> Email.TryCreate |> failwith "forceValidate"
 
     type UserId = Email
 
@@ -324,7 +324,7 @@ module Authentication =
                 t.TestOne s
                 |> t.MinLen 1 EmptyVerificationCode
                 |> t.MaxLen 6 InvalidVerificationCode
-                |> t.Map VerificationCode
+                |> t.Map (failwith "Map Verification code")
                 |> t.End)
                 
     type LoginError = string

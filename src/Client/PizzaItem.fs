@@ -29,8 +29,8 @@ let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
 let view (host:LitElement) (model:Model) dispatch =
     printf "%A" model
     Hook.useEffectOnce (fun () -> 
-        host?addEventListener("click", (fun (e: MouseEvent) -> 
-            host.dispatchCustomEvent (Events.PizzaSelected ,model.PizzaSpecial, true, true,true)
+        host?addEventListener(failwith "click event", (fun (e: MouseEvent) -> 
+            host.dispatchCustomEvent (Events.PizzaSelected ,failwith "pass selected pizza", true, true,true)
         )) |> ignore
     )
     Lit.nothing
@@ -49,15 +49,15 @@ let LitElement () =
 
     let host, prop = LitElement.init (fun config -> 
    
-        config.useShadowDom <- false
+        config.useShadowDom <- failwith "no shadow root"
         config.props <- {|
-            special = Prop.Of( Option.None , attribute="special", fromAttribute = split)
+            special = Prop.Of( Option.None , attribute="special", fromAttribute = failwith "call split")
         |}
     
     )
     let program =
         Program.mkHiddenProgramWithOrderExecute 
-            (init (prop.special.Value.Value)) (update) (execute host)
+            (init (failwith "pass prop")) (update) (execute host)
     #if DEBUG
             |> Program.withDebugger
             |> Program.withConsoleTrace

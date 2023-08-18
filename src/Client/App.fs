@@ -1,2 +1,2 @@
 ﻿module FunPizzaShop.Client.App
-PizzaItem.register ()
+failwith "Register Pizza comp"

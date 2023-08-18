@@ -13,4 +13,4 @@ let init (pizzaSpecial:PizzaSpecial) () =
     {PizzaSpecial = pizzaSpecial} , NoOrder
 
 let update msg model =
-   model , NoOrder
+   model , failwith "no order"
