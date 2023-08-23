@@ -27,15 +27,15 @@ type AppEnv(config: IConfiguration) as self =
 
     interface IAuthentication with
         member _.Login: Login = 
-            commandApi.Value.Login
+            failwith "login"
             
         member _.Logout: Logout = 
             fun () -> 
                 async { 
-                    return  Ok()
+                    return failwith "logout"
                 }
         member _.Verify: Verify = 
-            commandApi.Value.Verify
+            failwith "verify"
     
 
     interface IQuery with

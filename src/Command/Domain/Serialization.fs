@@ -48,7 +48,7 @@ type ThothSerializer(system: ExtendedActorSystem) =
     override _.ToBinary(o) =
         match o with
         | :? Common.Event<User.Event> as mesg -> mesg |> userMessageEncode
-        | :? User.State as mesg -> mesg |> userStateEncode
+        | :? User.State as mesg -> mesg |> failwith "what"
         | e ->
             Log.Fatal("shouldn't happen {e}", e)
             Environment.FailFast("shouldn't happen")
@@ -59,7 +59,7 @@ type ThothSerializer(system: ExtendedActorSystem) =
     override _.Manifest(o: obj) : string =
         match o with
         | :? Common.Event<User.Event> -> "UserMessage"
-        | :? User.State -> "UserState"
+        | :? User.State ->  failwith "what"
         | _ -> o.GetType().FullName
 
      override _.FromBinary(bytes: byte[], manifest: string) : obj =
@@ -73,10 +73,10 @@ type ThothSerializer(system: ExtendedActorSystem) =
             
         match manifest with
         | "UserState" -> upcast decode userStateDecode
-        | "UserMessage" -> upcast decode userMessageDecode
+        | "UserMessage" ->failwith "what"
 
         | _ ->
             Log.Fatal("manifest {manifest} not found", manifest)
             Environment.FailFast("shouldn't happen")
-            raise (new SerializationException())
+            raise (failwith "what")
 

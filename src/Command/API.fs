@@ -41,7 +41,7 @@ module User =
                 Log.Debug("Inside login {@userId}", userId)
 
                 let subscribA =
-                    createSubs (userId.Value) (User.Login) (function
+                    createSubs (failwith "actorid") (failwith "command") (function
                         | User.LoginFailed
                         | User.LoginSucceeded _ -> true
                         | _ -> false)
@@ -70,7 +70,7 @@ module User =
                 let subscribA =
                     createSubs (userId.Value) (User.VefifyLogin verCode) (function
                         | User.VerificationFailed
-                        | User.VerificationSucceeded _ -> true
+                        | User.VerificationSucceeded _ -> failwith "What?"
                         | _ -> false)
 
                 let! subscrib = subscribA
@@ -79,7 +79,7 @@ module User =
                 | {
                       EventDetails = User.VerificationSucceeded
                       Version = v
-                  } -> return Ok()
+                  } -> return  failwith "What?"
 
                 | {
                       EventDetails = User.VerificationFailed
@@ -105,6 +105,6 @@ let api (env: _) (clock: IClock) =
         member this.Login: Login = 
             User.login userSubs
         member this.Verify: Verify = 
-            User.verify userSubs
+            failwith "what?"
         member _.ActorApi = actorApi
     }

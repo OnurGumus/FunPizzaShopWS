@@ -47,10 +47,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
             log.Debug("Apply Message {@Event}, State: @{State}", event, state)
             match event with
             | LoginSucceeded(code) ->
-                {
-                    state with
-                        Verification = code
-                }
+                failwith "change state"
             | _ -> state
     
         actor {
@@ -59,7 +56,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
             match msg with
             | PersistentLifecycleEvent _
             | :? Persistence.SaveSnapshotSuccess
-            | LifecycleEvent _ -> return! state |> set
+            | LifecycleEvent _ -> failwith "no state change"
 
             | SnapshotOffer(snapState: obj) -> return! snapState |> unbox<_> |> set
 
@@ -76,7 +73,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                 if (version >= 30L && version % 30L = 0L) then
                     return! state |> set <@> SaveSnapshot(state)
                 else
-                    return! state |> set
+                    return! failwith "set state"
                     
             | Recovering mailbox (:? Common.Event<Event> as event) ->
                 return!
@@ -88,7 +85,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
 
             | _ ->
                 match msg with
-                | :? Persistence.RecoveryCompleted -> return! state |> set
+                | :? Persistence.RecoveryCompleted -> return! failwith "recovery completed"
 
                 | :? (Common.Command<Command>) as userMsg ->
                     let ci = userMsg.CorrelationId
@@ -114,7 +111,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                     | Login ->
                         try
                             let verificationCode =
-                                VerificationCode.TryCreate(random.Next(100000, 999999).ToString())
+                               failwith "generate verification code"
                                 |> forceValidate
 
                             let lastSlash = mailbox.Pid.LastIndexOf("/")
@@ -127,7 +124,7 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                                     |> forceValidate
 
                             let body =  
-                                $"Your verification code is <b>{verificationCode.Value}</b>" 
+                                $"""Your verification code is <b>{failwith "verCode"}</b>"""
                                 |> LongString.TryCreate |> forceValidate
 
                             let subject = "Verification Code" |> ShortString.TryCreate |> forceValidate
@@ -135,12 +132,12 @@ let actorProp (env:_) toEvent (mediator: IActorRef<Publish>) (mailbox: Eventsour
                             //          (mailSender.SendVerificationMail email subject body
 
                             let e = LoginSucceeded( Some verificationCode)
-                            return! toEvent ci (v + 1L) e |> sendToSagaStarter ci |> box |> Persist
+                            return! toEvent ci (failwith "increment version") e |> sendToSagaStarter ci |> box |> Persist
 
                         with ex ->
                                 log.Error(ex, "Error sending verification code")
                                 let e2 = LoginFailed
-                                return! toEvent ci v e2 |> box |> Persist
+                                return! toEvent ci (failwith "dont increment version") e2 |> box |> Persist
                 | _ ->
                         log.Debug("Unhandled Message {@MSG}", box msg)
                         return Unhandled
@@ -156,4 +153,4 @@ let init (env: _) toEvent (actorApi: IActor) =
     <| false
 
 let factory (env: _) toEvent actorApi entityId =
-    (init env toEvent actorApi).RefFor DEFAULT_SHARD entityId
+    (init env toEvent actorApi).RefFor (failwith "shard id") (failwith "entity")

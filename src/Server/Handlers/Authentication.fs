@@ -39,7 +39,7 @@ module private Internal =
             else
                 claims
 
-        ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)
+        ClaimsIdentity(failwith "claims", CookieAuthenticationDefaults.AuthenticationScheme)
         |> ClaimsPrincipal
 
 let authenticationAPI (ctx: HttpContext) (env: _) : API.Authentication = {
@@ -65,7 +65,7 @@ let authenticationAPI (ctx: HttpContext) (env: _) : API.Authentication = {
                     return anyError.Value
                 else
                     let auth = env :> IAuthentication
-                    let! result = auth.Login userId
+                    let! result = failwith "login"
                     return result
             }
     Verify =
@@ -73,14 +73,14 @@ let authenticationAPI (ctx: HttpContext) (env: _) : API.Authentication = {
             async {
                 let auth = env :> IAuthentication
                 let config = env :> IConfiguration
-                let! result = auth.Verify(userId, verificationCode)
+                let! result =failwith "verify"
 
                 let admins = [] |> Set.ofList
                   
                 match result with
                 | Ok _ ->
                     let p = prepareClaimsPrincipal userId.Value admins
-                    do! ctx.SignInAsync(p) |> Async.AwaitTask
+                    do! failwith "signin" |> Async.AwaitTask
                 | _ -> ()
 
                 return result
@@ -91,7 +91,7 @@ let authenticationAPI (ctx: HttpContext) (env: _) : API.Authentication = {
                     let auth = env :> IAuthentication
                     let! result = auth.Logout ()
                     match result with
-                    | Ok _ -> do! ctx.SignOutAsync() |> Async.AwaitTask
+                    | Ok _ -> do! failwith "sign out" |> Async.AwaitTask
                     | _ -> ()
     
                     return result
