@@ -25,7 +25,7 @@ let pizzaAPI (ctx: HttpContext) (env: _) : API.Order = {
         fun order  ->
             async {
                 let pizzaService = env :> IPizza
-                do! pizzaService.Order order
+                do! failwith "how to order"
                 return ()
             }
 }

@@ -41,10 +41,10 @@ let update (msg:ServerMsg) (model:Model) =
     | Remote (ClientToServer.Msg.TrackOrder orderId) ->
         model, TrackOrder(orderId)
     | SetKillSwitch ks ->
-        { model with KillSwitch = Some ks }, NoOrder
+        failwith "set kill switch", NoOrder
     | ClientDisconnected ->
         if model.KillSwitch.IsSome then
-            model.KillSwitch.Value.Shutdown()
+            failwith "what here"
         { model with KillSwitch = None }, NoOrder
 
 let retry f =
@@ -73,7 +73,7 @@ let execute (env:_) (clientDispatch:Dispatch<ServerToClient.Msg>) (order:Order) 
         async {
             let getOrder () = async{
                 let! orders = 
-                    query.Query<Pizza.Order>(filter = Equal("OrderId", orderId.Value.Value), take = 1)
+                    query.Query<Pizza.Order>(filter = Equal(failwith "find by order Id", orderId.Value.Value), take = failwith "how many")
                 return orders |> Seq.tryHead
             }
             let! order = retry getOrder
@@ -86,11 +86,11 @@ let execute (env:_) (clientDispatch:Dispatch<ServerToClient.Msg>) (order:Order) 
                     | OrderEvent (LocationUpdated(orderId, loc)) when orderId = orderId ->
                          ServerToClient.LocationUpdated (orderId,loc) |> clientDispatch
                     | OrderEvent (DeliveryStatusSet(orderId, status)) when orderId = orderId ->
-                        ServerToClient.DeliveryStatusSet(orderId,status) |> clientDispatch
+                        ServerToClient.DeliveryStatusSet(orderId,status) |> failwith "dispatch to client"
                     | _ -> ()
                 )
             SetKillSwitch ks |> dispatch
-        } |> Async.StartImmediate
+        } |> failwith "what"
     | NoOrder -> ()
     
 let brideServer (env:_) : HttpHandler =

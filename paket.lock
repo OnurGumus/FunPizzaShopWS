@@ -1046,7 +1046,7 @@ NUGET
       FSharp.Core (>= 5.0)
     FSharp.Control.AsyncRx (1.6.7)
       FSharp.Core (>= 6.0.6)
-    FSharp.Core (7.0.300)
+    FSharp.Core (7.0.400)
     FsToolkit.ErrorHandling (4.9)
       FSharp.Core (>= 7.0.300)
     Thoth.Json (10.2)

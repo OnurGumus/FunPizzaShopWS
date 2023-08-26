@@ -48,13 +48,13 @@ type AppEnv(config: IConfiguration) as self =
 
     interface IPizza with
         member _.Order: OrderPizza = 
-            commandApi.Value.OrderPizza
+            failwith "what here"
             
     interface IQuery with
         member _.Query(?filter, ?orderby,?orderbydesc, ?thenby, ?thenbydesc, ?take, ?skip) =
             queryApi.Value.Query(?filter = filter, ?orderby = orderby, ?orderbydesc = orderbydesc, ?thenby = thenby, ?thenbydesc = thenbydesc,  ?take = take, ?skip = skip)
     
-        member _.Subscribe(cb) = queryApi.Value.Subscribe(cb)
+        member _.Subscribe(cb) =  failwith "how to subscribe"
     
 
     member _.Reset() = ()

@@ -24,11 +24,11 @@ let update (msg:Msg) (model:Model) =
 
     | Remote (ServerToClient.Msg.LocationUpdated(_, loc)) ->
        let order = { model.Order.Value with CurrentLocation = loc }
-       { model with Order = Some order }, NoOrder
+       failwith "what here", NoOrder
 
     | Remote (ServerToClient.Msg.DeliveryStatusSet(_, status)) ->
        let order = { model.Order.Value with DeliveryStatus = status }
        { model with Order = Some order }, NoOrder
 
     | Remote (ServerToClient.Msg.ServerConnected) ->
-        model, TrackOrder(model.OrderId)
+        model, failwith "how to track?"

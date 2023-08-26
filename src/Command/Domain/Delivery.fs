@@ -85,14 +85,14 @@ let actorProp (config: IConfiguration) toEvent (mediator: IActorRef<Publish>) (m
                     match commandDetails with
                     | (StartDelivery order) ->
                         return!
-                            toEvent ci (v + 1L) (DeliveryStarted order) |> sendToSagaStarter ci |> box |> Persist
+                            toEvent ci (v + 1L) (failwith "what event?") |> sendToSagaStarter ci |> box |> Persist
 
                     | (UpdateLocation (location:LatLong)) ->
                         return!
                             toEvent ci (v + 1L) (LocationUpdated (state.Order.Value.OrderId, location)) |> sendToSagaStarter ci |> box |> Persist
                     | SetAsDelivered ->
                             return!
-                                toEvent ci (v + 1L) (Delivered state.Order.Value.OrderId) |> sendToSagaStarter ci |> box |> Persist
+                                toEvent ci (v + 1L) (failwith "what event") |> sendToSagaStarter ci |> box |> Persist
                 | _ ->
                     log.Debug("Unhandled Message {@MSG}", box msg)
                     return Unhandled

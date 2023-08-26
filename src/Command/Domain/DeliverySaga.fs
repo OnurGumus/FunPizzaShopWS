@@ -132,8 +132,7 @@ let actorProp
                
                 None
             | WaitingForOrderDeliveryStatusSet ->
-                orderActor(state.Data.Order.Value) <! setDeliveryStatusForOrder(DeliveryStatus.Delivered)
-                None
+                 (failwith "what here")
             | Completed -> 
                 if recovered then
                     Some (Started)
@@ -202,7 +201,7 @@ let actorProp
                         return! state |> box |> Persist
                     | Delivery.Delivered _ ->
                         let state =
-                            WaitingForOrderDeliveryStatusSet  |> StateChanged
+                            failwith "what here"
                         return! state |> box |> Persist
                     | Delivery.LocationUpdated _ ->
                         return! set state

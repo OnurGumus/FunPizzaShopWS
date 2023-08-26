@@ -25,7 +25,7 @@ let rec execute (host: LitElement) order (dispatch: Msg -> unit) =
     match order with
     | Order.NoOrder -> ()
     | Order.TrackOrder orderId ->
-        Bridge.NamedSend("TrackOrder", (ClientToServer.Msg.TrackOrder orderId))
+        Bridge.NamedSend("TrackOrder", (failwith "what message to send"))
     
 let mapClientMsg msg =
     match msg with

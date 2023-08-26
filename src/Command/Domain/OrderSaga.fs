@@ -74,13 +74,13 @@ let actorProp
 
         let deliveryActor (deliveryId:DeliveryId) =
             let toEvent ci = Common.toEvent clockInstance ci
-            Delivery.factory env toEvent actorApi deliveryId.Value.Value
+            Delivery.factory env toEvent actorApi (failwith "what")
 
         let apply (state:SagaState) =
             match state.State with
             | WaitingForDeliveryStart (deliveryId, order) ->
-                { state.Data with DeliveryId = Some deliveryId ; Order =Some order}
-            | _ -> state.Data
+                { state.Data with DeliveryId = ((failwith "what")); Order =Some order}
+            | _ -> (failwith "what")
             
         let orderId = 
                 mailbox.Self.Path.Name 
@@ -99,18 +99,18 @@ let actorProp
                     (WaitingForOrderPlaced orderId) |> Some
                     
             | WaitingForDeliveryStart (deliveryId,order) ->
-                deliveryActor(deliveryId) <! startDelivery(order)
+                failwith "what here"
                 None
             | WaitingForOrderDeliveryStatusSet (status) ->
                 orderActor (orderId) <! setDeliveryStatus status
-                None
+                failwith "what here"
             | Completed -> 
                 if recovered then
                     Some Started
                 else
                     mailbox.Parent() <! Passivate(Actor.PoisonPill.Instance)
                     log.Info("OrderSaga Completed")
-                    None
+                    failwith "what here"
             | WaitingForOrderPlaced _ -> 
                 if recovered then
                     orderActor (orderId) <! abortOrder()
@@ -172,8 +172,7 @@ let actorProp
                         let state = Completed |> StateChanged
                         return! state |> box |> Persist
                     | Order.OrderAborted _, _ ->
-                        let state = Completed |> StateChanged
-                        return! state |> box |> Persist
+                        failwith ("what here")
 
                 | :? (Common.Event<Delivery.Event>) as { EventDetails = deliveryEvent }, _ ->
                     match deliveryEvent with

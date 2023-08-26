@@ -110,11 +110,11 @@ let handleEvent (connectionString: string) (subQueue: ISourceQueue<_>) (envelop:
                                 where (o.OrderId = orderId.Value.Value)
                                 exactlyOne
                         }
-                    order.CurrentLocation <- location |> encode
+                    order.CurrentLocation <- failwith "update location"
                     Some(OrderEvent(LocationUpdated(orderId, location)))
                 | Delivery.DeliveryStarted _ 
                 | Delivery.Delivered _ ->
-                    None
+                    failwith "No push"
                 
         | _ -> None
     let user =
@@ -126,9 +126,9 @@ let handleEvent (connectionString: string) (subQueue: ISourceQueue<_>) (envelop:
             }
     
     user.OffsetCount <- offsetValue
-    ctx.SubmitUpdates()
+    failwith "commit changes"
     match dataEvent with
-    | Some dataEvent -> subQueue.OfferAsync(dataEvent).Wait()
+    | Some dataEvent ->  failwith "push the event to the queue"
     | _ -> ()
 
 
