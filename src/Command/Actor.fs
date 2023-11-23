@@ -7,7 +7,6 @@ open Akka.Persistence.Journal
 open Akka.Actor
 open Akka.Cluster
 open Akka.Cluster.Tools.PublishSubscribe
-open Akka.Persistence.Sqlite
 open Akkling
 open Microsoft.Extensions.Configuration
 open Common.DynamicConfig
@@ -54,7 +53,7 @@ let api (config: IConfiguration) =
 
     let system = System.create "cluster-system" config
 
-    SqlitePersistence.Get(system) |> ignore
+   // SqlitePersistence.Get(system) |> ignore
 
     Cluster.Get(system).SelfAddress
     |> Cluster.Get(system).Join

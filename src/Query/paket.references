@@ -4,8 +4,9 @@ Serilog
 Akka.Persistence.Query.Sql
 NodaTime
 NodaTime.Serialization.JsonNet
-Akka.Persistence.Sqlite
+Akka.Persistence.Sql
 Microsoft.Data.SQLite.Core
+Microsoft.Data.SQLite
 SQLProvider
 SQLitePCLRaw.core
 Microsoft.Extensions.Configuration

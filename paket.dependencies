@@ -1,10 +1,11 @@
 source https://api.nuget.org/v3/index.json
 
 storage: none
-framework: auto-detect
+framework: 8.0
 
 nuget Giraffe
 nuget FSharp.Core
+nuget Akka 
 nuget Microsoft.AspNetCore.SpaServices.Extensions
 nuget TickSpec
 nuget Microsoft.Playwright
@@ -21,7 +22,6 @@ nuget Akkling.Persistence
 nuget Akkling.Cluster.Sharding
 nuget Akka.Cluster.Tools
 nuget Akka.Persistence.Sqlite
-nuget Microsoft.Data.SQLite.Core
 nuget FSharp.Interop.Dynamic
 nuget Microsoft.Extensions.Configuration
 nuget Hocon.Extensions.Configuration
@@ -41,6 +41,7 @@ nuget NodaTime.Serialization.JsonNet
 nuget NodaTime
 nuget Akka.Logger.Serilog
 nuget Akka.Persistence.Query.Sql
+nuget Akka.Persistence.Sql
 nuget Serilog.Expressions
 nuget Serilog.AspNetCore
 nuget SQLitePCLRaw.bundle_green
@@ -52,11 +53,13 @@ nuget Google.Apis.Auth
 nuget Thoth.Json
 nuget Elmish.Bridge.Giraffe
 nuget FSharp.SystemTextJson
-
-
+nuget Microsoft.Data.SQLite
+nuget Akka.Persistence.Sql
+nuget Microsoft.AspNetCore.WebUtilities
+nuget Microsoft.Net.Http.Headers
 group Build
     source https://api.nuget.org/v3/index.json
-    framework: auto-detect
+    framework: 8.0
     storage: none
 
     nuget FSharp.Core
@@ -66,7 +69,7 @@ group Build
 
 group Client
     source https://api.nuget.org/v3/index.json
-    framework: auto-detect
+    framework: 8.0
     storage: none
     
     nuget FSharp.Core

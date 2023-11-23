@@ -15,7 +15,7 @@ Akkling.Persistence
 Akkling.Cluster.Sharding
 Akka.Cluster.Tools
 Akka.Persistence.Sqlite
-Microsoft.Data.SQLite.Core
+Microsoft.Data.SQLite
 FSharp.Interop.Dynamic
 Microsoft.Extensions.Configuration
 Hocon.Extensions.Configuration

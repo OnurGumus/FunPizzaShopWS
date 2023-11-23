@@ -131,12 +131,6 @@ let handleEvent (connectionString: string) (subQueue: ISourceQueue<_>) (envelop:
     | Some dataEvent -> subQueue.OfferAsync(dataEvent).Wait()
     | _ -> ()
 
-
-
-
-
-
-
 open Command.Actor
 let handleEventWrapper (connectionString: string) (actorApi:IActor) (subQueue: ISourceQueue<_>) (envelop: EventEnvelope) =
     try
@@ -150,7 +144,7 @@ let handleEventWrapper (connectionString: string) (actorApi:IActor) (subQueue: I
 let readJournal system =
     PersistenceQuery
         .Get(system)
-        .ReadJournalFor<SqlReadJournal>(SqlReadJournal.Identifier)
+        .ReadJournalFor<Akka.Persistence.Sql.Query.SqlReadJournal>(SqlReadJournal.Identifier)
 
 let init (connectionString: string) (actorApi: IActor) =
     Log.Information("init query side")
@@ -162,8 +156,7 @@ let init (connectionString: string) (actorApi: IActor) =
                 exactlyOne
         }
     let source =
-        (readJournal actorApi.System)
-            .EventsByTag("default", Offset.Sequence(offsetCount))
+        (readJournal actorApi.System).AllEvents(Offset.Sequence(offsetCount))
             
     Log.Information("Journal started")
     let subQueue = Source.queue OverflowStrategy.Fail 1024

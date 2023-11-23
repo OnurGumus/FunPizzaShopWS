@@ -7,9 +7,9 @@ Akkling.Persistence
 Akkling.Cluster.Sharding
 Akka.Cluster.Tools
 Akka.Logger.Serilog
-Akka.Persistence.Sqlite
+Akka.Persistence.Sql
 Akkling.Streams
-Microsoft.Data.SQLite.Core
+Microsoft.Data.SQLite
 FSharp.Interop.Dynamic
 Microsoft.Extensions.Configuration
 Serilog
