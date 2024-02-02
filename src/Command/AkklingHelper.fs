@@ -35,6 +35,8 @@ type internal TypedMessageExtractor<'Envelope, 'Message>(extractor: Extractor<_,
                 let _, _, msg = extractor env
                 box msg
             | other -> invalidOp <| string other
+        member this.ShardId(entityId: string, messageHint: obj): string = 
+            shardResolver (entityId)
 
 
 // HACK over persistent actors
