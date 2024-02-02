@@ -8,7 +8,7 @@
             "name": "Launch Web",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/src/Server/bin/Debug/net7.0/Server.dll",
+            "program": "${workspaceFolder}/src/Server/bin/Debug/net8.0/Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Server",
             "console": "integratedTerminal",

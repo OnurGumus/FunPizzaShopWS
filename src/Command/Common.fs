@@ -168,6 +168,7 @@ module SagaStarter =
     type Command =
         | CheckSagas of obj * originator: Actor.IActorRef * cid: string
         | Continue
+        | StartSaga of obj
 
     type Event = SagaCheckDone
 
@@ -215,11 +216,10 @@ module SagaStarter =
         match msg with
         | :? SubscribeAck as s when s.Subscribe.Topic = originatorName -> Some msg
         | _ -> None
-
     let actorProp (sagaCheck: obj -> (((string -> IEntityRef<_>) * PrefixConversion) list)) (mailbox: Actor<_>) =
         let rec set (state: Map<string, (Actor.IActorRef * string list)>) =
 
-            let startSaga cid (originator: Actor.IActorRef) (list: ((string -> IEntityRef<_>) * PrefixConversion) list) =
+            let startSaga cid (originator: Actor.IActorRef) (list: ((string -> IEntityRef<_>) * PrefixConversion) list)  event =
                 let sender = untyped <| mailbox.Sender()
 
                 let sagas = [
@@ -233,8 +233,7 @@ module SagaStarter =
                                       originator.Path.Name + SAGA_Suffix + (f (name |> toRawGuid))
                             |> factory
 
-                        saga <! box (ShardRegion.StartEntity(saga.EntityId))
-
+                        saga <! box (StartSaga event)
                         yield saga.EntityId
                 ]
 
@@ -272,7 +271,7 @@ module SagaStarter =
                     | [] ->
                         mailbox.Sender() <! SagaCheckDone
                         return! set state
-                    | list -> return! set <| startSaga cid originator list
+                    | list -> return! set <| startSaga cid originator list o
 
                 | _ -> return! Unhandled
             }

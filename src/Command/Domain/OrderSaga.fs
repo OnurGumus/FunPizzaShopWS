@@ -21,7 +21,7 @@ open Akka.Event
 
 type State =
     | NotStarted
-    | Started 
+    | Started of Common.Event<Order.Event>
     | WaitingForOrderPlaced of OrderId
     | WaitingForDeliveryStart of DeliveryId * Order
     | WaitingForOrderDeliveryStatusSet of DeliveryStatus
@@ -34,10 +34,10 @@ type Event =
 
     interface IDefaultTag
 
-type SagaData = { DeliveryId : DeliveryId option; Order: Order option}
-type SagaState = { Data : SagaData; State: State}
+type SagaData = { DeliveryId : DeliveryId option; Order: Order option; StartingEvent: Common.Event<Order.Event> option}
+type SagaState = { Data : SagaData; State: State;}
 
-let initialState = { State = NotStarted; Data = { DeliveryId = None; Order = None} }
+let initialState = { State = NotStarted; Data = { DeliveryId = None; Order = None; StartingEvent = None}  }
 let actorProp
     (env: _)
     toEvent
@@ -78,6 +78,8 @@ let actorProp
 
         let apply (state:SagaState) =
             match state.State with
+            | Started e ->
+                { state.Data with StartingEvent = Some e}
             | WaitingForDeliveryStart (deliveryId, order) ->
                 { state.Data with DeliveryId = Some deliveryId ; Order =Some order}
             | _ -> state.Data
@@ -90,8 +92,8 @@ let actorProp
 
         let applySideEffects (state:SagaState) recovered =
             match state.State with
-            | NotStarted -> Started |> Some
-            | Started ->
+            | NotStarted -> None
+            | Started _ ->
                 if recovered then
                     Some Completed
                 else
@@ -106,7 +108,7 @@ let actorProp
                 None
             | Completed -> 
                 if recovered then
-                    Some Started
+                    None
                 else
                     mailbox.Parent() <! Passivate(Actor.PoisonPill.Instance)
                     log.Info("OrderSaga Completed")
@@ -142,6 +144,9 @@ let actorProp
             | :? Akka.Persistence.SaveSnapshotSuccess
             | LifecycleEvent _ -> return! state |> set
             | SnapshotOffer(snapState: obj) ->  return! snapState |> unbox<_> |> set
+            | :? Command as (StartSaga (:? (Common.Event<Order.Event>) as e)) -> 
+                return!  (Started e |> StateChanged |> box |> Persist)
+
             | _ ->
                 match msg, state with
                 | SagaStarter.SubscrptionAcknowledged mailbox _, _ ->
